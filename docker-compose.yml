@@ -1,16 +1,12 @@
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    networks:
-      - appsocado-intranet
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    networks:
-      - appsocado-intranet
     depends_on:
       - zookeeper
     ports:
@@ -28,7 +24,6 @@ services:
     image: appsocado-api
     restart: unless-stopped
     build:
-      network: host
       context: .
       dockerfile: Dockerfile
       target: development # Only will build development stage from our dockerfile
@@ -36,14 +31,12 @@ services:
       - ./:/usr/src/app
     ports:
       - ${PORT}:${PORT}
-    networks:
-      - appsocado-intranet
     env_file:
       - .env # Available inside container not in compose file
     environment:
-      - DB_HOST=sqlite
-      - REDIS_HOST=nestjs-redis
-      - REDIS_PORT=6380
+      - DB_HOST=${DB_HOST}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     depends_on:
       - sqlite
       - nestjs-redis
@@ -51,6 +44,7 @@ services:
     links:
       - sqlite
       - nestjs-redis
+      - kafka
     command: npm start # Run in development mode
 
   sqlite:
@@ -67,8 +61,6 @@ services:
       - SQLITE_DB=${DB_NAME}
     ports:
       - 5432:${DB_PORT}
-    networks:
-      - appsocado-intranet
 
   nestjs-redis:
     container_name: nestjs-redis
@@ -77,22 +69,26 @@ services:
     volumes:
       - redis:/data
     ports:
-      - 6380:${REDIS_PORT}
-    networks:
-      - appsocado-intranet
+      - 6379:${REDIS_PORT}
+    hostname: redis
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       retries: 3
       timeout: 3s
 
+  migrate-db:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - "./:/app"
+    links:
+      - sqlite
+    command: npm run migrate:up
+
 volumes:
   sqlite:
     name: sqlite
   redis:
     name: nestjs-redis
-
-networks:
-  appsocado-intranet:
-    name: appsocado-intranet
-    driver: bridge

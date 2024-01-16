@@ -17,6 +17,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
+        cli: {
+          migrationsDir: 'apps/task-microservice/src/app/migration',
+        },
+        entities: ['apps/task-microservice/**/*.entity.ts'],
+        migrations: ['apps/task-microservice/src/app/migration/*.js'],
       }),
     }),
   ],

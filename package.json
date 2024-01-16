@@ -14,7 +14,16 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "nx test",
     "docker:up": "docker-compose up -d -V --build",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "typeorm": "ts-node ./node_modules/.bin/typeorm --config ./apps/task-microservice/src/app/typeormconfig.ts",
+    "create:task": "npm run typeorm -- migration:create --config ./apps/task-microservice/src/app/typeormconfig.ts -n ",
+    "migrate:up:task": "npm run typeorm -- migration:run --config ./apps/task-microservice/src/app/typeormconfig.ts",
+    "migrate:down:task": "npm run typeorm -- migration:revert --config ./apps/task-microservice/src/app/typeormconfig.ts",
+    "migrate:generate:task": "npm run typeorm -- migration:generate --config ./apps/task-microservice/src/app/typeormconfig.ts -n ",
+    "create:user": "npm run typeorm -- migration:create --config ./apps/user-microservice/src/app/typeormconfig.ts -n ",
+    "migrate:up:user": "npm run typeorm -- migration:run --config ./apps/user-microservice/src/app/typeormconfig.ts",
+    "migrate:down:user": "npm run typeorm -- migration:revert --config ./apps/user-microservice/src/app/typeormconfig.ts",
+    "migrate:generate:user": "npm run typeorm -- migration:generate --config ./apps/user-microservice/src/app/typeormconfig.ts -n "
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",
