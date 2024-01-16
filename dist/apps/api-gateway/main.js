@@ -1065,11 +1065,12 @@ exports["default"] = (0, config_1.registerAs)('database', () => {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const config_1 = __webpack_require__(17);
 exports["default"] = (0, config_1.registerAs)('redis', () => {
-    return Object.assign(Object.assign({ host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT, 10) || 6379, db: parseInt(process.env.REDIS_DATABASE, 10), keyPrefix: process.env.REDIS_KEY_PREFIX + ':' }, (process.env.REDIS_USERNAME && {
-        username: process.env.REDIS_USERNAME,
-    })), (process.env.REDIS_PASSWORD && {
-        password: process.env.REDIS_PASSWORD,
-    }));
+    return {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT, 10) || 6380,
+        db: parseInt(process.env.REDIS_DATABASE, 10),
+        keyPrefix: process.env.REDIS_KEY_PREFIX + ':',
+    };
 });
 
 

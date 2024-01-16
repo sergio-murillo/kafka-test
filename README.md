@@ -20,4 +20,6 @@ Project in NestJS with Kafka, Redis and SQLite
 
 ```bash
 $ npm install
+
+$ npm run docker:up
 ```

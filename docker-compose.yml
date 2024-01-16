@@ -27,7 +27,6 @@ services:
     container_name: appsocado-api
     image: appsocado-api
     restart: unless-stopped
-    #network_mode: "host"
     build:
       network: host
       context: .
