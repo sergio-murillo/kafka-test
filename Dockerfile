@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json ./
 
 RUN npm cache clean --force
 
@@ -33,7 +33,7 @@ FROM node:18-alpine As build
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json ./
 
 # In order to run `npm run build` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,

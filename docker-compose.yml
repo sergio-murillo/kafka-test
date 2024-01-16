@@ -41,22 +41,30 @@ services:
     env_file:
       - .env # Available inside container not in compose file
     environment:
-      - DB_HOST=nestjs-sqlite
+      - DB_HOST=sqlite
       - REDIS_HOST=nestjs-redis
+      - REDIS_PORT=6380
     depends_on:
-      - nestjs-sqlite
+      - sqlite
       - nestjs-redis
       - kafka
+    links:
+      - sqlite
+      - nestjs-redis
     command: npm start # Run in development mode
 
-  nestjs-sqlite:
-    container_name: nestjs-sqlite
+  sqlite:
+    container_name: sqlite
     image: nouchka/sqlite3:latest
     stdin_open: true
     tty: true
     restart: unless-stopped
     volumes:
-      - sqlite:/var/lib/sqlite
+      - sqlite:/var/lib/sqlite/data
+    environment:
+      - SQLITE_USER=${DB_USER}
+      - SQLITE_PASSWORD=${DB_PASSWORD}
+      - SQLITE_DB=${DB_NAME}
     ports:
       - 5432:${DB_PORT}
     networks:
@@ -80,7 +88,7 @@ services:
 
 volumes:
   sqlite:
-    name: nestjs-sqlite
+    name: sqlite
   redis:
     name: nestjs-redis
 

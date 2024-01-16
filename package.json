@@ -30,7 +30,7 @@
     "class-validator": "^0.14.1",
     "ioredis": "^5.3.2",
     "kafkajs": "^2.2.4",
-    "nx": "^17.2.8",
+    "nx": "16.0.0",
     "reflect-metadata": "^0.1.14",
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.1",
@@ -64,14 +64,14 @@
     "tsconfig-paths": "4.2.0",
     "typescript": "^5.3.3",
     "@nrwl/cli": "^15.9.7",
-    "@nrwl/jest": "^17.2.8",
-    "@nrwl/linter": "^17.2.8",
-    "@nrwl/nest": "^17.2.8",
-    "@nrwl/node": "^17.2.8",
+    "@nx/jest": "16.0.0",
+    "@nx/linter": "16.0.0",
+    "@nx/nest": "16.0.0",
+    "@nx/node": "16.0.0",
     "@nrwl/nx-cloud": "latest",
-    "@nrwl/workspace": "^17.2.8",
-    "@nrwl/webpack": "^17.2.8",
-    "@nrwl/js": "^17.2.8"
+    "@nx/workspace": "16.0.0",
+    "@nx/webpack": "16.0.0",
+    "@nx/js": "16.0.0"
   },
   "engines": {
     "node": ">= 18"
