@@ -1,0 +1,91 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    networks:
+      - appsocado-intranet
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - appsocado-intranet
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  appsocado-api:
+    container_name: appsocado-api
+    image: appsocado-api
+    restart: unless-stopped
+    #network_mode: "host"
+    build:
+      network: host
+      context: .
+      dockerfile: Dockerfile
+      target: development # Only will build development stage from our dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - appsocado-intranet
+    env_file:
+      - .env # Available inside container not in compose file
+    environment:
+      - DB_HOST=nestjs-sqlite
+      - REDIS_HOST=nestjs-redis
+    depends_on:
+      - nestjs-sqlite
+      - nestjs-redis
+      - kafka
+    command: npm start # Run in development mode
+
+  nestjs-sqlite:
+    container_name: nestjs-sqlite
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - sqlite:/var/lib/sqlite
+    ports:
+      - 5432:${DB_PORT}
+    networks:
+      - appsocado-intranet
+
+  nestjs-redis:
+    container_name: nestjs-redis
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+    ports:
+      - 6380:${REDIS_PORT}
+    networks:
+      - appsocado-intranet
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      retries: 3
+      timeout: 3s
+
+volumes:
+  sqlite:
+    name: nestjs-sqlite
+  redis:
+    name: nestjs-redis
+
+networks:
+  appsocado-intranet:
+    name: appsocado-intranet
+    driver: bridge
