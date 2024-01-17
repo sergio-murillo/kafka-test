@@ -1,13 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { CreateTaskDto, TaskDto, UpdateTaskDto } from './dto';
 
 @Injectable()
-export class TasksService {
+export class TasksService implements OnModuleInit {
   constructor(
     @Inject('TASK_MICROSERVICE') private readonly taskClient: ClientKafka
   ) {}
+
+  onModuleInit() {
+    this.taskClient.subscribeToResponseOf('get_task_by_id');
+  }
 
   async create(task: CreateTaskDto): Promise<void> {
     this.taskClient.emit('create_task', JSON.stringify(task));
