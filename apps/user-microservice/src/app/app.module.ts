@@ -11,7 +11,6 @@ import jwtConfig from './common/config/jwt.config';
 import { validate } from './common/validation/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import redisConfig from './common/config/redis.config';
 import { RedisModule } from './redis/redis.module';
 import swaggerConfig from './common/config/swagger.config';
@@ -29,12 +28,6 @@ import swaggerConfig from './common/config/swagger.config';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

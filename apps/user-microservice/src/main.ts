@@ -5,11 +5,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { TransformInterceptor } from './app/common/interceptors/transform.interceptor';
 import { setupSwagger } from './swagger';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  setupSwagger(app);
+  const app = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'user-consumer',
+      },
+    },
+  });
 
   app.useGlobalInterceptors(new TransformInterceptor());
 
@@ -23,13 +32,7 @@ async function bootstrap() {
     }),
   );
 
-  const configService = app.get(ConfigService);
-
-  const port = configService.get('USER_PORT');
-
-  await app.listen(port, () => {
-    console.log(`Application running at ${port}`);
-  });
+  await app.listen();
 }
 
 bootstrap();

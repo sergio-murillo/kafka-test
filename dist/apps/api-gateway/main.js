@@ -228,11 +228,7 @@ const config_1 = __webpack_require__("@nestjs/config");
 exports["default"] = (0, config_1.registerAs)('database', () => {
     return {
         type: 'sqlite',
-        host: process.env.DB_HOST || 'sqite',
-        port: parseInt(process.env.DB_PORT, 10) || 5432,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        name: process.env.DB_NAME,
+        database: 'database/db',
     };
 });
 
@@ -337,11 +333,9 @@ function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = yield core_1.NestFactory.create(app_module_1.AppModule);
         (0, swagger_1.setupSwagger)(app);
-        const globalPrefix = 'api';
-        app.setGlobalPrefix(globalPrefix);
-        const port = process.env.PORT || 3333;
+        const port = process.env.PORT || 3003;
         yield app.listen(port);
-        common_1.Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+        common_1.Logger.log(`🚀 Application is running on: http://localhost:${port}`);
     });
 }
 bootstrap();
@@ -1066,6 +1060,7 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_b = typeof create_user_dto_1.CreateUserDto !== "undefined" && create_user_dto_1.CreateUserDto) === "function" ? _b : Object]),
     __metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
@@ -1160,6 +1155,9 @@ const rxjs_1 = __webpack_require__("rxjs");
 let UsersService = class UsersService {
     constructor(userClient) {
         this.userClient = userClient;
+    }
+    onModuleInit() {
+        this.userClient.subscribeToResponseOf('sign_in');
     }
     create(createUserDto) {
         this.userClient.emit('create_user', JSON.stringify(createUserDto));

@@ -15,7 +15,7 @@ export class UsersController {
   @Public()
   @Post()
   @HttpCode(HttpStatus.OK)
-  async create(user: CreateUserDto): Promise<void> {
+  async create(@Body() user: CreateUserDto): Promise<void> {
     this.usersService.create(user);
   }
 

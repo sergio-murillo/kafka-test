@@ -48,19 +48,26 @@ services:
     command: npm start # Run in development mode
 
   sqlite:
-    container_name: sqlite
-    image: nouchka/sqlite3:latest
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
+    image: alpine:latest
     volumes:
-      - sqlite:/var/lib/sqlite/data
-    environment:
-      - SQLITE_USER=${DB_USER}
-      - SQLITE_PASSWORD=${DB_PASSWORD}
-      - SQLITE_DB=${DB_NAME}
+      - ./database:/data
+    command: sh -c "apk --no-cache add sqlite && cp /data/appsocado.sqlite /data/db.sqlite && sqlite3 /data/db.sqlite < /data/init.sql && tail -f /dev/null"
+    container_name: sqlite
+
+  sqlitebrowser:
+    image: linuxserver/sqlitebrowser
     ports:
-      - 5432:${DB_PORT}
+      - "3000:3000"
+    depends_on:
+      - sqlite
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - ENABLE_UWSGI=true
+    volumes:
+      - sqlite:/data/db
+    container_name: sqlitebrowser
 
   nestjs-redis:
     container_name: nestjs-redis
@@ -77,18 +84,9 @@ services:
       retries: 3
       timeout: 3s
 
-  migrate-db:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    volumes:
-      - "./:/app"
-    links:
-      - sqlite
-    command: npm run migrate:up
-
 volumes:
   sqlite:
     name: sqlite
+    external: true
   redis:
     name: nestjs-redis

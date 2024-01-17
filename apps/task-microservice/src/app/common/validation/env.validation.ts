@@ -20,26 +20,6 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  DB_HOST: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  DB_PORT: number;
-
-  @IsString()
-  @IsNotEmpty()
-  DB_USER: string;
-
-  @IsString()
-  @IsNotEmpty()
-  DB_PASSWORD: string;
-
-  @IsString()
-  @IsNotEmpty()
-  DB_NAME: string;
-
-  @IsString()
-  @IsNotEmpty()
   REDIS_HOST: string;
 
   @IsNumber()

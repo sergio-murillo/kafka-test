@@ -15,7 +15,7 @@
     "test": "nx test",
     "docker:up": "docker-compose up -d -V --build",
     "docker:down": "docker-compose down",
-    "typeorm": "ts-node ./node_modules/.bin/typeorm --config ./apps/task-microservice/src/app/typeormconfig.ts",
+    "typeorm": "ts-node ./node_modules/.bin/typeorm",
     "create:task": "npm run typeorm -- migration:create --config ./apps/task-microservice/src/app/typeormconfig.ts -n ",
     "migrate:up:task": "npm run typeorm -- migration:run --config ./apps/task-microservice/src/app/typeormconfig.ts",
     "migrate:down:task": "npm run typeorm -- migration:revert --config ./apps/task-microservice/src/app/typeormconfig.ts",
