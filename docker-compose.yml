@@ -19,56 +19,6 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  appsocado-api:
-    container_name: appsocado-api
-    image: appsocado-api
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development # Only will build development stage from our dockerfile
-    volumes:
-      - ./:/usr/src/app
-    ports:
-      - ${PORT}:${PORT}
-    env_file:
-      - .env # Available inside container not in compose file
-    environment:
-      - DB_HOST=${DB_HOST}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-    depends_on:
-      - sqlite
-      - nestjs-redis
-      - kafka
-    links:
-      - sqlite
-      - nestjs-redis
-      - kafka
-    command: npm start # Run in development mode
-
-  sqlite:
-    image: alpine:latest
-    volumes:
-      - ./database:/data
-    command: sh -c "apk --no-cache add sqlite && cp /data/appsocado.sqlite /data/db.sqlite && sqlite3 /data/db.sqlite < /data/init.sql && tail -f /dev/null"
-    container_name: sqlite
-
-  sqlitebrowser:
-    image: linuxserver/sqlitebrowser
-    ports:
-      - "3000:3000"
-    depends_on:
-      - sqlite
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=UTC
-      - ENABLE_UWSGI=true
-    volumes:
-      - sqlite:/data/db
-    container_name: sqlitebrowser
-
   nestjs-redis:
     container_name: nestjs-redis
     image: redis:alpine

@@ -1,9 +1,6 @@
 # AppSocado API
-Project in NestJS with Kafka, Redis and SQLite
+Proyecto monorepo para APPSocado
 
-## Description
-
-Project in NestJS with Kafka, Redis and SQLite
 
 
 ## Technologies stack:
@@ -13,13 +10,24 @@ Project in NestJS with Kafka, Redis and SQLite
 - Redis
 - Kafka
 - Docker
+- NX
 
 ## Setup
 
-### 1. Install the required dependencies
-
+### Se levanta el contenedor junto con todas sus imágenes:
 ```bash
-$ npm install
-
 $ npm run docker:up
 ```
+### En caso de querer bajar el contenedor se puede ejecutar:
+```bash
+$ npm run docker:down
+```
+
+### Luego se levantan los microservicios
+```bash
+$ npm start
+$ npm run start user-microservice
+$ npm run start task-microservice
+```
+
+### Finalmente se pueden acceder los servicios por algun cliente o por Swagger accediendo a http://localhost:3003/docs
