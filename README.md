@@ -23,6 +23,11 @@ $ npm run docker:up
 $ npm run docker:down
 ```
 
+### Se instalan las dependencias:
+```bash
+$ npm i
+```
+
 ### Luego se levantan los microservicios
 ```bash
 $ npm start
